@@ -2609,9 +2609,11 @@ if (['#works', '#about', '#contact'].includes(location.hash)){
     cur = name;
     try { history.replaceState(history.state, '', dir + ROUTE[name]); } catch (e) {}
   };
-  const first = location.hash === '#about' ? 'about' : location.hash === '#works' ? 'works' : 'home';
+  const routePath = location.pathname.replace(/\/+$/, '');
+  const first = location.hash === '#about' || routePath === '/my-story' ? 'about' : location.hash === '#works' || routePath === '/work' ? 'works' : 'home';
   addEventListener('intro:ready', () => {
     set(first);
+    if (first !== 'home') requestAnimationFrame(() => document.getElementById(first)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' }));
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) set(e.target.id === 'works' ? 'works' : e.target.id === 'about' ? 'about' : 'home'); }),
       { rootMargin: '-45% 0px -45% 0px' });
     ['home', 'works', 'about'].forEach(id => { const el = document.getElementById(id); if (el) io.observe(el); });
